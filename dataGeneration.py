@@ -1,8 +1,13 @@
 import numpy as np
 
-V = 100
+data_length = 1000
 
-x = np.array([V, -V, V, V, V, -V, -V, V, V, -V, -V, -V, -V], dtype=np.complex64)
+data = np.random.randint(2, size=data_length)
+data = np.array_str(data, max_line_width=2*data_length)
 
-with open("data.bin", "wb") as f:
-    f.write(x.tobytes())
+data = data.replace("[", "")
+data = data.replace("]", "")
+data = data.replace(" ", "")
+
+with open("data.txt", "w") as f:
+    f.write(data)
