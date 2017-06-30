@@ -75,6 +75,37 @@ class PLL(object):
             self.phase_list = np.append(self.phase_list, phase)
 
 
+    def correct_frequency_offset(self):
+        """ Use P control to estimate frequency offset in self.data, correct for
+        it, and save the corrected data as self.data_fixed. """
+
+        freq = 0
+        err = 0
+
+        self.data_fixed = np.array([])
+
+        self.abs_val_list = np.array([])
+        self.err_list = np.array([])
+        self.freq_list = np.array([])
+
+        for i, x in enumerate(self.data):
+
+            # Multiply input value by complex exponential of specified phase
+            y = x * np.exp(-freq * i * j)
+            self.data_fixed = np.append(self.data_fixed, y)
+
+            # Estimate error in phase for BPSK
+            err = y.real * y.imag
+
+            # Use PID control to find the phase offset for the next step
+            freq += self.k_p * err
+
+            # Track data for plottting
+            self.err_list = np.append(self.err_list, err)
+            self.abs_val_list = np.append(self.abs_val_list, np.absolute(x))
+            self.freq_list = np.append(self.freq_list, freq)
+
+
     def plot_data(self):
         """ Visualize! """
 
